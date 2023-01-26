@@ -6,16 +6,17 @@ import pickle
 src = cv2.VideoCapture(0)
 #cv2.namedWindow("window", cv2.WND_PROP_FULLSCREEN)
 #cv2.setWindowProperty("window",cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
-# f1 = open("M_Pickle",'rb')
-# f2 = open("dest_Pickle",'rb')
-# M = pickle.load(f1)
+f1 = open("M_Pickle",'rb')
+f2 = open("dest_Pickle",'rb')
+M = pickle.load(f1)
 
-# destination_corners = pickle.load(f2)
+destination_corners = pickle.load(f2)
 
-
+f1.close()
+f2.close()
 ada = cv2.VideoCapture("Water Dance - 112512.mp4")
 res = (1920,1080 )
-x_start, y_start, w_projection, h_projection=(60,71,518,290)
+# x_start, y_start, w_projection, h_projection=(98 ,102 ,497 ,280)
 
 cv2.namedWindow("foo", cv2.WINDOW_NORMAL)
 cv2.setWindowProperty("foo", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
@@ -30,8 +31,8 @@ while cv2.waitKey(1) != 27:
     ret, img = src.read()
     ma,des = ada.read()
     # img = img0
-    img = img[y_start:y_start + h_projection, x_start:x_start + w_projection]
-
+    img = cv2.warpPerspective(img, M, (destination_corners[2][0], destination_corners[2][1]),
+                                flags=cv2.INTER_LINEAR)
     img  = cv2.resize(img,res)
     print(img)
     # cv2.imwrite("images/" + str(i) + "_0.png", img)

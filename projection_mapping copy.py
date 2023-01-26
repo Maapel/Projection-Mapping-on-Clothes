@@ -12,10 +12,10 @@ src = cv2.VideoCapture(0)
 
 # destination_corners = pickle.load(f2)
 
-
-ada = cv2.VideoCapture("Water Dance - 112512.mp4")
+prev_y = 0
+ada = cv2.VideoCapture("Tree - 134913.mp4")
 res = (1920,1080 )
-x_start, y_start, w_projection, h_projection=(60,71,518,290)
+x_start, y_start, w_projection, h_projection=(135,128,431,255)
 
 cv2.namedWindow("foo", cv2.WINDOW_NORMAL)
 cv2.setWindowProperty("foo", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
@@ -25,6 +25,7 @@ for i in range(20):
     cv2.waitKey(1)
 cv2.waitKey()
 i = 0
+prev_area=0
 while cv2.waitKey(1) != 27:
     i+=1
     ret, img = src.read()
@@ -33,7 +34,6 @@ while cv2.waitKey(1) != 27:
     img = img[y_start:y_start + h_projection, x_start:x_start + w_projection]
 
     img  = cv2.resize(img,res)
-    print(img)
     # cv2.imwrite("images/" + str(i) + "_0.png", img)
 
     # ret = True
@@ -82,8 +82,18 @@ while cv2.waitKey(1) != 27:
 
         cnt = contours[max_index]
 
+
         x, y, w, h = cv2.boundingRect(cnt)
+
         y_ = y +  h //2
+        if (prev_y==0):
+            prev_y = y_
+        diff = y_ - prev_y
+        prev_y = y_
+        fact = 70
+        print(diff)
+       # cv2.resize(img,(int(img.shape[1]*(1 + diff/fact)),int(img.shape[0]*(1+ diff/fact))))
+        #img = img [0:res[1],0:res[0] ]
         arr = img[y_][x:x + w]
         c = 0
         x2 = x+ w
@@ -95,7 +105,7 @@ while cv2.waitKey(1) != 27:
                 c += 1
                 x2 = p + x
                 break
-
+        
         # w_=x2-x1
         x_ = (x1 + x2) // 2
         x_1 = x_ - w // 2

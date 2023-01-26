@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import time
-src = cv2.VideoCapture(1)
+src = cv2.VideoCapture(0)
 #cv2.namedWindow("window", cv2.WND_PROP_FULLSCREEN)
 #cv2.setWindowProperty("window",cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
 
@@ -15,13 +15,12 @@ im =white_im
 cv2.namedWindow("foo", cv2.WINDOW_NORMAL)
 cv2.setWindowProperty("foo", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 cv2.imshow("foo", im)
-cv2.waitKey()
-cv2.destroyWindow("foo")
-for p in range(10):
+while cv2.waitKey(1) != 27:
     ret , white_rec = src.read()
+cv2.destroyWindow("foo")
 white_rec = cv2.GaussianBlur(white_rec, (11, 11), 0)
 white_rec = cv2.cvtColor(white_rec,cv2.COLOR_BGR2GRAY)
-ret, white_rec = cv2.threshold(white_rec, 50, 255, cv2.THRESH_BINARY)
+ret, white_rec = cv2.threshold(white_rec, 47, 255, cv2.THRESH_BINARY)
 cv2.imshow("h",white_rec)
 cv2.waitKey()
 contours, hierarchy = cv2.findContours(white_rec, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -47,9 +46,11 @@ for p in range(len(arr)):
         break
 x_start = x1
 w_projection=x2-x1
+
+
 cv2.rectangle(white_rec,(x_start,y_start),(x_start+w_projection,y_start+h_projection),(155,0,0),2)
 cv2.imshow("h",white_rec)
-cv2.waitKey(5)
+cv2.waitKey()
 cv2.namedWindow("foo", cv2.WINDOW_NORMAL)
 cv2.setWindowProperty("foo", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 
@@ -58,6 +59,6 @@ print(x_start, y_start, w_projection, h_projection )
 for i in range(200):
     ret,img = src.read()
     img = img[y_start:y_start + h_projection, x_start:x_start + w_projection]
-    # cv2.imwrite("m.png",img)
-    cv2.imshow("foo",img)
+    cv2.imwrite("m.png",img)
+    # cv2.imshow("foo",img)
     cv2.waitKey(1)

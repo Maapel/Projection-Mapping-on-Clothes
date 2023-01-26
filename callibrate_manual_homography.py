@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import time
+import pickle
 src = cv2.VideoCapture(0)
 #cv2.namedWindow("window", cv2.WND_PROP_FULLSCREEN)
 #cv2.setWindowProperty("window",cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
@@ -57,11 +58,17 @@ destination_corners = [[0, 0], [maxWidth, 0], [maxWidth, maxHeight], [0, maxHeig
 
 M = cv2.getPerspectiveTransform(np.float32(POS), np.float32(destination_corners))
 print(M, destination_corners)
-
+f1 = open("M_Pickle",'ab')
+f2 = open("dest_Pickle",'ab')
+pickle.dump(M,f1)
+pickle.dump(destination_corners,f2)
+f1.close()
+f2.close()
 while cv2.waitKey(1)!=27:
     ret,img = src.read()
-    M = cv2.getPerspectiveTransform(np.float32(POS), np.float32(destination_corners))
+    
     # Perspective transform using homography.
+   
     img = cv2.warpPerspective(img, M, (destination_corners[2][0], destination_corners[2][1]),
                                 flags=cv2.INTER_LINEAR)
     # img = img[y_start:y_start + h_projection, x_start:x_start + w_projection]
